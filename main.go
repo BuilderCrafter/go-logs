@@ -3,34 +3,50 @@ package main
 import (
 	"fmt"
 	"os"
-	"time"
+	"strconv"
+	"strings"
+	"test_project/logs"
 )
 
+func clearScreen() {
+	// Clears the screen and moves the cursor to home
+	ansiClear := "\033[2J\033[H"
+	if _, err := fmt.Fprint(os.Stdout, ansiClear); err == nil {
+		return
+	}
+}
+
+func parseInput(s string) (num int, str string) {
+	s = strings.TrimSpace(s)
+
+	if n, err := strconv.Atoi(s); err == nil && n > 0 {
+		return n, ""
+	}
+	return 0, s
+}
+
 func main() {
-	fmt.Println("Welcome to data storage application!")
-	fmt.Println("This application allows the storage of text logs")
-	var input int8
+	var input string
+	err := logs.LoadLogsFromJSON("spaceship_logs.json")
+	if err != nil {
+		panic(err)
+	}
 	for {
-		fmt.Println("Choose one of the following actions")
-		fmt.Println("1 - Read logs")
-		fmt.Println("2 - Write log")
-		fmt.Println("3 - Delete logs")
-		fmt.Println("0 - Exit")
+		clearScreen()
+		fmt.Println("Welcome to logs storage application!")
+		fmt.Println("This application allows the storage of text logs")
+		fmt.Println("You can read, write, edit and delete logs")
+		fmt.Println("Enter the number of log you would like to read/edit/delete")
+		fmt.Println("Enter '+' if you would like to create new log")
+		fmt.Println("---------------------LOGS------------------------")
+		logs.Print_logs()
 		fmt.Scanf("%v", &input)
-		switch input {
-		case 0:
-			fmt.Println("Exiting...")
+		in_num, in_str := parseInput(input)
+		if in_num != 0 {
+			logs.Read_log(uint8(in_num) - 1)
+		} else if in_str == "q" {
 			os.Exit(0)
-		case 1:
-			fmt.Println("Reading to storage...")
-			time.Sleep(1000000000)
-			fmt.Println("Done!")
-		case 2:
-			fmt.Println("Writing to storage...")
-			time.Sleep(1000000000)
-			fmt.Println("Done!")
-		default:
-			fmt.Println("Invalid selection")
 		}
+		clearScreen()
 	}
 }

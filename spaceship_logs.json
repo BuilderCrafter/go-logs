@@ -1,0 +1,52 @@
+[
+  {
+    "name": "log-001",
+    "date": "2325-04-12T11:23:00Z",
+    "text": "Captain's Log \u2014 We departed Earth Spacedock at 1100 hours. Crew spirits are high as we set course for Proxima Centauri."
+  },
+  {
+    "name": "log-002",
+    "date": "2325-04-15T08:47:00Z",
+    "text": "Encountered unexpected micrometeoroid field. Shields held; minor hull scarring on Deck 7. Engineering running diagnostics."
+  },
+  {
+    "name": "log-003",
+    "date": "2325-04-18T19:05:00Z",
+    "text": "First successful test of the new graviton drive. Achieved 0.82c for twelve minutes before safeties engaged."
+  },
+  {
+    "name": "log-004",
+    "date": "2325-04-23T06:12:00Z",
+    "text": "Picked up a faint distress beacon near the Tau Ceti debris belt. Altering course to investigate."
+  },
+  {
+    "name": "log-005",
+    "date": "2325-04-23T18:34:00Z",
+    "text": "Arrived at beacon source: derelict freighter ISS Mercator. No life\u2011signs detected. Security teams boarding."
+  },
+  {
+    "name": "log-006",
+    "date": "2325-04-24T02:50:00Z",
+    "text": "Recovered Mercator's flight recorder. Evidence of a reactor breach; cause undetermined. Memorial service scheduled."
+  },
+  {
+    "name": "log-007",
+    "date": "2325-04-28T14:17:00Z",
+    "text": "Passed through the Helix Nebula. Spectacular filament structures\u2014science division collected terabytes of sensor data."
+  },
+  {
+    "name": "log-008",
+    "date": "2325-05-02T09:00:00Z",
+    "text": "Diplomatic first contact with the Lyran Collective successful. Exchanged cultural data and established a comms relay."
+  },
+  {
+    "name": "log-009",
+    "date": "2325-05-05T23:45:00Z",
+    "text": "Medical alert: unknown pathogen detected in hydroponics bay. Quarantine in effect; Dr. Haru leading containment."
+  },
+  {
+    "name": "log-010",
+    "date": "2325-05-10T16:28:00Z",
+    "text": "Pathogen neutralized; no casualties. Course laid in for return to Earth to report findings and replenish supplies."
+  }
+]
