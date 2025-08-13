@@ -1,10 +1,13 @@
 package helpers
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"strings"
 )
+
+var stdin = bufio.NewReader(os.Stdin)
 
 func ClearScreen() {
 	// Clears the screen and moves the cursor to home
@@ -43,4 +46,18 @@ func WrapText(s string, limit int) string {
 		lineLen += len(w)
 	}
 	return b.String()
+}
+
+func ReadLine() string {
+	s, _ := stdin.ReadString('\n')
+	return strings.TrimRight(s, "\r\n")
+}
+
+func WaitForEnter(prompt string) {
+	if prompt == "" {
+		fmt.Print("-Press Enter to continue-")
+	} else {
+		fmt.Println(prompt)
+	}
+	stdin.ReadString('\n')
 }

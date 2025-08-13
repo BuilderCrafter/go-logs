@@ -2,6 +2,7 @@ package logs
 
 import (
 	"fmt"
+	"strings"
 	"test_project/database"
 	"test_project/helpers"
 )
@@ -35,14 +36,12 @@ func Open_log(index uint8) {
 	var input string
 	helpers.ClearScreen()
 	if index >= uint8(len(log_index)) {
-		fmt.Println("Invalid log index")
-		fmt.Scanf("%v", input)
+		helpers.WaitForEnter("Invalid log index")
 		return
 	}
 	log, ok := database.Get(log_index[index])
 	if !ok {
-		fmt.Println("LOG NOT FOUND")
-		fmt.Scanf("%v", input)
+		helpers.WaitForEnter("LOG NOT FOUND")
 		return
 	}
 	for {
@@ -53,15 +52,14 @@ func Open_log(index uint8) {
 		fmt.Printf("%v\n", helpers.WrapText(log.Text, 50))
 		fmt.Println("Edit: E | Delete: X | Return: R")
 		fmt.Print("Input: ")
-		fmt.Scanf("%v", &input)
+		input = helpers.ReadLine()
 		input, val_input := helpers.LogParseInput(input)
 		if !val_input {
 			helpers.ClearScreen()
-			fmt.Println("Invalid input")
-			fmt.Scanf("%v", &input)
+			helpers.WaitForEnter("Invalid input")
 			continue
 		}
-		switch input {
+		switch strings.ToLower(input) {
 		case "x":
 			Delete_log(index)
 			return
@@ -76,121 +74,107 @@ func Open_log(index uint8) {
 }
 
 func Edit_log(index uint8) {
-	var input string
+	var input_name string
+	var input_text string
 	helpers.ClearScreen()
 	if index >= uint8(len(log_index)) {
-		fmt.Println("Invalid log index")
-		fmt.Scanf("%v", &input)
+		helpers.WaitForEnter("Invalid log index")
 		return
 	}
 	log, ok := database.Get(log_index[index])
 	if !ok {
-		fmt.Println("LOG NOT FOUND")
-		fmt.Scanf("%v", &input)
+		helpers.WaitForEnter("LOG NOT FOUND")
 		return
 	}
 	for {
 		helpers.ClearScreen()
 		fmt.Println("Current log name:", log.Name)
 		fmt.Print("Enter new name (max 50 characters/0 length to exit):")
-		fmt.Scanf("%50s", &input)
-		if len(input) > 50 {
+		input_name = helpers.ReadLine()
+		if len(input_name) > 50 {
 			helpers.ClearScreen()
-			fmt.Println("Input exceeds maximum length of 50 characters.")
-			fmt.Scanf("%v", &input)
+			helpers.WaitForEnter("Input exceeds maximum length of 50 characters.")
 			continue
-		} else if len(input) == 0 {
+		} else if len(input_name) == 0 {
 			helpers.ClearScreen()
-			fmt.Println("Canceling edit operation.")
-			fmt.Scanf("%v", &input)
+			helpers.WaitForEnter("Canceling edit operation.")
 			return
 		}
-		log.Name = input
+		log.Name = input_name
 		break // Exit the loop if a valid name is provided
 	}
 	helpers.ClearScreen()
 	fmt.Printf("Current log text\n------------------------------ \n%v\n", helpers.WrapText(log.Text, 50))
 	fmt.Println("Enter new text (0 length to exit)\n-------------------------------")
-	fmt.Scanf("%255s", &input)
-	if len(input) == 0 {
+	input_text = helpers.ReadLine()
+	if len(input_text) == 0 {
 		helpers.ClearScreen()
-		fmt.Println("Canceling edit operation.")
-		fmt.Scanf("%v", &input)
+		helpers.WaitForEnter("Canceling edit operation.")
 		return
 	}
-	log.Text = input
+	fmt.Println(input_text)
+	log.Text = input_text
 
 	database.Patch(log_index[index], log)
 	helpers.ClearScreen()
-	fmt.Println("Log updated successfully")
-	fmt.Scanf("%v", &input)
+	helpers.WaitForEnter("Log updated successfully")
 }
 
 func Create_log() {
-	var input string
 	var input_name string
 	var input_text string
 	helpers.ClearScreen()
 	if len(log_index) >= int(MAX_LENGTH) {
 		helpers.ClearScreen()
-		fmt.Println("Maximum number of logs reached. Cannot create new log.")
-		fmt.Scanf("%v", &input)
+		helpers.WaitForEnter("Maximum number of logs reached. Cannot create new log.")
 		return
 	}
 	for {
+		helpers.ClearScreen()
 		fmt.Println("Enter log name (max 50 characters/0 length to exit):")
-		fmt.Scanf("%50s", &input)
-		if len(input) > 50 {
+		input_name = helpers.ReadLine()
+		if len(input_name) > 50 {
 			helpers.ClearScreen()
-			fmt.Println("Input exceeds maximum length of 50 characters.")
-			fmt.Scanf("%v", &input)
-			return
-		} else if len(input) == 0 {
+			helpers.WaitForEnter("Input exceeds maximum length of 50 characters.")
+			continue
+		} else if len(input_name) == 0 {
 			helpers.ClearScreen()
-			fmt.Println("Canceling create operation.")
-			fmt.Scanf("%v", &input)
+			helpers.WaitForEnter("Canceling create operation.")
 			return
 		}
-		input_name = input
 		break // Exit the loop if a valid name is provided
 	}
 
 	helpers.ClearScreen()
 	fmt.Println("Enter new text (0 length to exit)\n-------------------------------")
-	fmt.Scanf("%255s", &input)
-	if len(input) == 0 {
+	input_text = helpers.ReadLine()
+	if len(input_text) == 0 {
 		helpers.ClearScreen()
-		fmt.Println("Canceling create operation.")
-		fmt.Scanf("%v", &input)
+		helpers.WaitForEnter("Canceling create operation.")
 		return
 	}
-	input_text = input
 
 	log_id := database.Create(input_name, input_text)
 	log_index = append(log_index, log_id)
 	helpers.ClearScreen()
-	fmt.Println("Log created successfully")
-	fmt.Scanf("%v", &input)
+	helpers.WaitForEnter("Log created successfully")
 
 }
 
 func Delete_log(index uint8) {
-	var input string
 	helpers.ClearScreen()
 	if index >= uint8(len(log_index)) {
-		fmt.Println("Invalid log index")
-		fmt.Scanf("%v", &input)
+		helpers.WaitForEnter("Invalid log index")
 		return
 	}
 	log, ok := database.Get(log_index[index])
 	if !ok {
-		fmt.Println("LOG NOT FOUND")
-		fmt.Scanf("%v", &input)
+		helpers.WaitForEnter("LOG NOT FOUND")
 		return
 	}
 	database.Delete(log_index[index])
 	log_index = append(log_index[:index], log_index[index+1:]...)
 	helpers.ClearScreen()
-	fmt.Println("Successfully deleted log: %v", log.Name)
-	fmt.Scanf("%v", &input)
+	fmt.Printf("Successfully deleted log: %v", log.Name)
+	helpers.WaitForEnter(" ")
 }
