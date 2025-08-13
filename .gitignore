@@ -1,0 +1,29 @@
+# Build outputs
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go build cache / artifacts
+*.prof
+*.pprof
+
+# Editors/IDEs
+.vscode/
+.idea/
+*.swp
+
+# Vendor (if used)
+vendor/
+
+# Logs & data files
+*.log
+*.tmp
+*.bak
+
+# OS cruft
+.DS_Store
+Thumbs.db

@@ -3,14 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	"logs_application/helpers"
-	"logs_application/logs"
+	"github.com/BuilderCrafter/go-logs/helpers"
+	"github.com/BuilderCrafter/go-logs/logs"
 )
 
 func main() {
 	// Optional: allow preload via flag.
 	var jsonPath string
-	flag.StringVar(&jsonPath, "load", "spaceship_logs.json", "load logs from JSON on startup")
+	flag.StringVar(&jsonPath, "load", "spaceship_logs.example.json", "load logs from JSON on startup")
 	flag.Parse()
 
 	if jsonPath != "" {

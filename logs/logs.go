@@ -4,8 +4,8 @@ package logs
 
 import (
 	"fmt"
-	"logs_application/database"
-	"logs_application/helpers"
+	"github.com/BuilderCrafter/go-logs/database"
+	"github.com/BuilderCrafter/go-logs/helpers"
 	"strings"
 )
 
