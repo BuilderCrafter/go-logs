@@ -1,40 +1,53 @@
+// Package logs provides a CLI-oriented, in-memory index of log IDs and
+// helpers for listing, opening, editing, creating, and deleting logs.
 package logs
 
 import (
 	"fmt"
+	"logs_application/database"
+	"logs_application/helpers"
 	"strings"
-	"test_project/database"
-	"test_project/helpers"
 )
 
+// log_index holds the ordered list of log IDs as shown in the CLI.
+// The order here (not the database) defines the menu numbering the user sees.
 var log_index []uint64
 
+// MAX_LENGTH is the maximum number of logs tracked by the CLI index.
 const MAX_LENGTH uint8 = 255
 
-func Num_of_logs() uint8 {
-	return uint8(len(log_index))
-}
-
+// LoadLogsFromJSON loads log IDs from a JSON file and replaces the current index.
+// It returns any error encountered during loading.
+//
+// The JSON loading/parsing is delegated to the database package.
 func LoadLogsFromJSON(path string) error {
-	id_index, err := database.InitFromJSON(path)
+	id_index, err := database.LoadFromJSON(path)
 	log_index = id_index
 	return err
 }
 
-func Print_logs() {
+// Print_logs prints the 1-based menu of logs by name.
+// Missing IDs (not present in the database) are reported as "LOG NOT FOUND".
+func PrintLogs() {
 	for index, id := range log_index {
 		log, ok := database.Get(id)
 		if ok {
-			fmt.Printf("%3d - %v\n", index+1, log.Name)
+			fmt.Printf("%3d - %v\n", index+1, log.Name) // 1-based numbering for UX
 		} else {
-			fmt.Println("%3d - LOG NOT FOUND\n", index)
+			fmt.Printf("%3d - LOG NOT FOUND\n", index)
 		}
 	}
 }
 
-func Open_log(index uint8) {
+// Open_log starts an interactive view loop for the log at the given index.
+// The user may edit (E), delete (X), or return (R) to the previous menu.
+//
+// If the index is invalid or the log is missing, an informational prompt is shown.
+func OpenLog(index uint8) {
 	var input string
 	helpers.ClearScreen()
+
+	// Validate that the menu index exists in the local index.
 	if index >= uint8(len(log_index)) {
 		helpers.WaitForEnter("Invalid log index")
 		return
@@ -61,10 +74,11 @@ func Open_log(index uint8) {
 		}
 		switch strings.ToLower(input) {
 		case "x":
-			Delete_log(index)
+			DeleteLog(index)
 			return
 		case "e":
-			Edit_log(index)
+			EditLog(index)
+			// Re-fetch updated log because Edit_log may have changed it.
 			log, _ = database.Get(log_index[index])
 			continue
 		case "r":
@@ -73,7 +87,9 @@ func Open_log(index uint8) {
 	}
 }
 
-func Edit_log(index uint8) {
+// Edit_log prompts the user to change the log's Name and Text at a given index.
+// Name input is limited to 50 characters; sending an empty input cancels.
+func EditLog(index uint8) {
 	var input_name string
 	var input_text string
 	helpers.ClearScreen()
@@ -86,6 +102,8 @@ func Edit_log(index uint8) {
 		helpers.WaitForEnter("LOG NOT FOUND")
 		return
 	}
+
+	// Name edit loop with validation and cancel path.
 	for {
 		helpers.ClearScreen()
 		fmt.Println("Current log name:", log.Name)
@@ -101,7 +119,7 @@ func Edit_log(index uint8) {
 			return
 		}
 		log.Name = input_name
-		break // Exit the loop if a valid name is provided
+		break // Valid name provided
 	}
 	helpers.ClearScreen()
 	fmt.Printf("Current log text\n------------------------------ \n%v\n", helpers.WrapText(log.Text, 50))
@@ -120,7 +138,10 @@ func Edit_log(index uint8) {
 	helpers.WaitForEnter("Log updated successfully")
 }
 
-func Create_log() {
+// Create_log interactively creates a new log, appending its ID to the CLI index.
+// It enforces MAX_LENGTH on the number of tracked logs and allows canceling
+// the operation with an empty input.
+func CreateLog() {
 	var input_name string
 	var input_text string
 	helpers.ClearScreen()
@@ -129,6 +150,8 @@ func Create_log() {
 		helpers.WaitForEnter("Maximum number of logs reached. Cannot create new log.")
 		return
 	}
+
+	// Name input with length limit and cancel option.
 	for {
 		helpers.ClearScreen()
 		fmt.Println("Enter log name (max 50 characters/0 length to exit):")
@@ -142,7 +165,7 @@ func Create_log() {
 			helpers.WaitForEnter("Canceling create operation.")
 			return
 		}
-		break // Exit the loop if a valid name is provided
+		break // Valid name provided
 	}
 
 	helpers.ClearScreen()
@@ -161,7 +184,9 @@ func Create_log() {
 
 }
 
-func Delete_log(index uint8) {
+// Delete_log removes the log at the given index from both the database and the CLI index.
+// If the index is invalid or the log is missing, it shows an informational prompt.
+func DeleteLog(index uint8) {
 	helpers.ClearScreen()
 	if index >= uint8(len(log_index)) {
 		helpers.WaitForEnter("Invalid log index")
@@ -173,6 +198,8 @@ func Delete_log(index uint8) {
 		return
 	}
 	database.Delete(log_index[index])
+
+	// Remove the element at 'index' from log_index while preserving order.
 	log_index = append(log_index[:index], log_index[index+1:]...)
 	helpers.ClearScreen()
 	fmt.Printf("Successfully deleted log: %v", log.Name)
