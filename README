@@ -24,9 +24,10 @@ sample `database` package is an **in-memory store** for convenience.
 
 ```bash
 # Clone your repo (replace with your URL)
-git clone https://github.com/yourusername/go-logs.git
+git clone https://github.com/BuilderCrafter/go-logs.git
 cd go-logs
 
 # Build and run
 go build
 ./go-logs    # or: go run .
+
