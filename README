@@ -62,7 +62,7 @@ the same interface.
 
 ## 🚀 Quick Start
 
-``` bash
+```bash
 # Clone the repository
 git clone https://github.com/BuilderCrafter/go-logs.git
 cd go-logs
@@ -75,3 +75,4 @@ go build
 # Or:
 go run .
 ```
+
