@@ -1,33 +1,77 @@
-# Go Logs — CLI Log Editor (DB-agnostic, in-memory demo)
+# **Go Logs --- Minimal CLI Log Editor**
 
-A tiny, menu-driven **CLI** app for creating, viewing, editing, and deleting log records.
-It’s built as a learning project with a **database-agnostic** design: the `logs` package
-only calls `Get`, `Create`, `Patch`, and `Delete` on a backing `database` layer. The
-sample `database` package is an **in-memory store** for convenience.
+**Database-agnostic • In-memory demo • Clean package design**
 
-> Note: There is **no persistence by default**; logs are kept in memory unless you wire up
-> a different database implementation. A JSON loader is provided for convenience.
+A tiny, menu-driven **CLI application** for creating, viewing, editing,
+and deleting log records. The architecture is intentionally simple: the
+`logs` package interacts only with an abstract database layer that
+exposes `Get`, `Create`, `Patch`, and `Delete`.
 
-## Features
-- Simple interactive menu (numbers, `+`, `q`; inside log: `e`, `x`, `r`)
-- Log fields: `ID`, `Name`, `Text`, `Date` (creation time)
-- Clean package separation: `helpers`, `logs`, `database`
-- DB-agnostic `logs` package (any storage that offers `Get/Create/Patch/Delete` will work)
-- Lightweight, standard library only
+The included `database` package provides a **lightweight in-memory
+store** so the app runs out-of-the-box.
 
-## Packages
-- `helpers` — terminal utilities (clear screen, input, wrapping) and input parsers
-- `logs` — high-level operations for listing/opening/creating/editing/deleting logs
-- `database` — sample in-memory store (`map[uint64]Log`) + JSON import helper
+> **Note:** The app has **no persistence by default**.\
+> Logs exist in memory only.\
+> You can plug in any other database backend, and a JSON loader is
+> included for quick demos.
 
-## Quick start
+------------------------------------------------------------------------
 
-```bash
-# Clone your repo (replace with your URL)
+## ✨ Features
+
+-   📟 **Interactive CLI menu**
+    -   Main menu: numbers, `+`, `q`
+    -   Log menu: `e` (edit), `x` (delete), `r` (return)
+-   🧩 **Log fields**: `ID`, `Name`, `Text`, `Date` (creation timestamp)
+-   🏗️ **Clean package boundaries** (`helpers`, `logs`, `database`)
+-   🔌 **DB-agnostic design** --- any backend implementing the CRUD
+    interface works
+-   🪶 **Zero external dependencies** --- pure Go standard library
+
+------------------------------------------------------------------------
+
+## 📦 Project Structure
+
+    go-logs/
+     ├── helpers/   # Terminal utilities, input handling, formatting helpers
+     ├── logs/      # High-level log operations (list/open/create/edit/delete)
+     ├── database/  # In-memory database + JSON import support
+     └── main.go
+
+### Package Overview
+
+#### **helpers**
+
+Utilities for: - clearing the terminal - reading user input - safe
+integer parsing - word-wrapping for long text
+
+#### **logs**
+
+Contains all high-level logic: - list logs - open/view a log - create or
+edit a log - delete log entries - orchestrates CLI menu interactions
+
+#### **database**
+
+A simple in-memory implementation: - `map[uint64]Log` storage - CRUD
+helpers - JSON import for loading demo data
+
+You can drop in PostgreSQL, SQLite, Redis, BoltDB, etc., by implementing
+the same interface.
+
+------------------------------------------------------------------------
+
+## 🚀 Quick Start
+
+``` bash
+# Clone the repository
 git clone https://github.com/BuilderCrafter/go-logs.git
 cd go-logs
 
-# Build and run
+# Build the binary
 go build
-./go-logs    # or: go run .
 
+# Run the app
+./go-logs
+# Or:
+go run .
+```
